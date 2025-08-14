@@ -3,8 +3,9 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
 import connectDB from './config/db.js';
-import songsRoutes from './routes/songs.routes.js';
 import authRoutes from './routes/auth.routes.js';
+import userRoutes from "./routes/user.routes.js";
+
 import playlistsRoutes from './routes/playlists.routes.js';
 import searchSongs from './routes/search.routes.js';
 
@@ -27,8 +28,8 @@ app.use(express.json());
 if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
 
 // routes
-app.use('/api/songs', songsRoutes);
 app.use('/api/auth', authRoutes);
+app.use("/api/users", userRoutes);
 app.use('/api/playlists', playlistsRoutes);
 app.use('/api/search', searchSongs);
 

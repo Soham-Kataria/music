@@ -1,0 +1,45 @@
+/src
+│
+├── /api
+│    └── apiClient.js            # Axios instance with base URL & interceptors
+│
+├── /components
+│    ├── Auth
+│    │    ├── Login.jsx
+│    │    └── Register.jsx
+│    │
+│    ├── Player.jsx              # Audio player controls & display
+│    ├── Playlist
+│    │    ├── PlaylistList.jsx  # List of playlists
+│    │    ├── PlaylistForm.jsx  # Create/Edit playlist form
+│    │    └── PlaylistDetail.jsx# Playlist detail with songs
+│    │
+│    ├── Search
+│    │    ├── SearchBar.jsx
+│    │    └── SearchResults.jsx
+│    │
+│    ├── Common                  # Shared UI components (Button, Loader, etc)
+│    │    ├── Button.jsx         # Styled buttons with consistent look & feel
+│    │    ├── Loader.jsx         # Spinner or loading indicator
+│    │    ├── Modal.jsx          # Generic popup/modal dialog
+│    │    ├── Input.jsx          # Styled input fields
+│    │    └── Alert.jsx          # Notification or error message box
+│    │
+│    └── Navbar.jsx              # Navigation bar component
+│
+├── /context
+│    └── AuthContext.jsx         # Auth state management (login/logout, token)
+│
+├── /pages
+│    ├── Home.jsx                # Main search + player page
+│    ├── LoginPage.jsx
+│    ├── RegisterPage.jsx
+│    ├── PlaylistPage.jsx        # Playlist management UI
+│    └── ProfilePage.jsx         # User profile (optional)
+│
+├── /utils
+│    └── helpers.js              # Helper functions (formatting, etc)
+│
+├── App.jsx
+├── main.jsx
+└── index.css                    # Global styles

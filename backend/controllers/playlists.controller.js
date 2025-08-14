@@ -5,11 +5,15 @@ import Playlist from '../models/playlists.models.js';
 export const getPlaylists = async (req, res, next) => {
   try {
     const playlists = await Playlist.find({ user: req.user.id });
-    res.json(playlists);
+    res.json({
+      success: true,
+      data: playlists
+    });
   } catch (err) {
     next(err);
   }
 };
+
 
 // @desc Create a new playlist
 // @route POST /api/playlists
@@ -76,9 +80,12 @@ import axios from 'axios';
 
 // @desc Add a single song to a playlist (fetch details from Deezer)
 // @route POST /api/playlists/:id/songs
+
 export const addSongToPlaylist = async (req, res, next) => {
   try {
+    console.log("Request body:", req.params);
     const playlist = await Playlist.findById(req.params.id);
+    console.log(playlist)
     if (!playlist) return res.status(404).json({ message: 'Playlist not found' });
 
     if (playlist.user.toString() !== req.user.id)
@@ -87,22 +94,30 @@ export const addSongToPlaylist = async (req, res, next) => {
     const { trackId } = req.body;
     if (!trackId) return res.status(400).json({ message: 'trackId is required' });
 
-    // Prevent duplicates
+    // Prevent duplicates by track id
     if (playlist.songs.some(song => song.id === trackId))
       return res.status(400).json({ message: 'Song already in playlist' });
 
-    // Fetch song details from Deezer API
-    const response = await axios.get(`https://api.deezer.com/track/${trackId}`);
-    const track = response.data;
+    // Fetch song details from iTunes Lookup API
+    const response = await axios.get('https://itunes.apple.com/lookup', {
+      params: { id: trackId }
+    });
 
-    if (!track || !track.id) return res.status(404).json({ message: 'Track not found in Deezer' });
+    if (!response.data.results || response.data.results.length === 0)
+      return res.status(404).json({ message: 'Track not found in iTunes' });
 
-    // Add to playlist
+    const track = response.data.results[0];
+
+    // Add to playlist (map fields accordingly)
     playlist.songs.push({
-      id: track.id.toString(),
-      title: track.title,
-      artist: track.artist?.name || 'Unknown Artist',
-      preview: track.preview || null,
+      id: track.trackId.toString(),
+      title: track.trackName,
+      artist: track.artistName || 'Unknown Artist',
+      preview: track.previewUrl || null,
+      artwork: track.artworkUrl100 || null,
+      album: track.collectionName || null,
+      genre: track.primaryGenreName || null,
+      releaseDate: track.releaseDate || null
     });
 
     const updated = await playlist.save();
@@ -111,6 +126,7 @@ export const addSongToPlaylist = async (req, res, next) => {
     next(err);
   }
 };
+
 
 
 // @desc Remove a single song from a playlist
@@ -131,37 +147,3 @@ export const removeSongFromPlaylist = async (req, res, next) => {
   }
 };
 
-
-export const searchSongs = async (req, res, next) => {
-  try {
-    const { q } = req.query;
-    if (!q) return res.status(400).json({ message: 'Search query is required' });
-
-    // MusicBrainz search recordings endpoint
-    const url = 'https://musicbrainz.org/ws/2/recording/';
-
-    const response = await axios.get(url, {
-      params: {
-        query: q,
-        fmt: 'json',
-        limit: 25,
-      },
-      headers: {
-        'User-Agent': 'YourAppName/1.0 ( your-email@example.com )',
-      },
-    });
-
-    // Map MusicBrainz response to your desired format
-    const tracks = response.data.recordings.map((rec) => ({
-      id: rec.id,
-      title: rec.title,
-      artist: rec['artist-credit']?.map((a) => a.name).join(', ') || 'Unknown Artist',
-      release: rec.releases?.[0]?.title || 'Unknown Release',
-      date: rec.releases?.[0]?.date || 'Unknown Date',
-    }));
-
-    res.json({ total: response.data.count, data: tracks });
-  } catch (err) {
-    next(err);
-  }
-};
