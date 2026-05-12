@@ -1,10 +1,12 @@
 import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
-import apiClient from "../../api/apiClient";
+import { authService } from "../../api/authService";
 import Alert from "../Common/Alert";
+import { AxiosError } from "axios";
+import type { ApiErrorResponse } from "../../types";
 
-const Login = () => {
+const Login: React.FC = () => {
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
 
@@ -12,15 +14,16 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
     try {
-      const res = await apiClient.post("/auth/login", { email, password });
-      login(res.data.token, res.data.user);
+      const data = await authService.login({ email, password });
+      login(data.token, data.user);
       navigate("/");
     } catch (err) {
-      setError(err.response?.data?.message || "Login failed");
+      const axiosError = err as AxiosError<ApiErrorResponse>;
+      setError(axiosError.response?.data?.message || "Login failed");
     }
   };
 
