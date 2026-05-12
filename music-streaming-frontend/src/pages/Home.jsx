@@ -63,14 +63,14 @@
 import React, { useState } from "react";
 import Search from "../components/Search/Search";
 import Player from "../components/Player";
+import Card from "../components/Common/Card";
 
 const Home = () => {
-  const [playlist, setPlaylist] = useState([]); // all tracks from search or saved list
-  const [currentIndex, setCurrentIndex] = useState(-1); // index of the current track
+  const [playlist, setPlaylist] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(-1);
   const [currentTrack, setCurrentTrack] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
 
-  // When user selects a track from search results
   const handleTrackSelect = (track, tracksArray = []) => {
     setPlaylist(tracksArray.length ? tracksArray : [track]);
     const index = tracksArray.length
@@ -96,8 +96,7 @@ const Home = () => {
 
   const handlePrev = () => {
     if (playlist.length > 0) {
-      const prevIndex =
-        (currentIndex - 1 + playlist.length) % playlist.length;
+      const prevIndex = (currentIndex - 1 + playlist.length) % playlist.length;
       setCurrentIndex(prevIndex);
       setCurrentTrack(playlist[prevIndex]);
       setIsPlaying(true);
@@ -107,7 +106,6 @@ const Home = () => {
   return (
     <div className="page-container">
       <Search onTrackSelect={handleTrackSelect} />
-
       <Player
         currentTrack={currentTrack}
         isPlaying={isPlaying}

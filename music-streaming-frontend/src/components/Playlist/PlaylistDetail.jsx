@@ -94,10 +94,10 @@ import React, { useState } from "react";
 import Button from "../Common/Button";
 import Player from "../Player";
 
-const PlaylistDetail = ({ playlist, onRemoveSong }) => {
-  const [currentIndex, setCurrentIndex] = React.useState(-1);
-  const [currentTrack, setCurrentTrack] = React.useState(null);
-  const [isPlaying, setIsPlaying] = React.useState(false);
+const PlaylistDetail = ({ playlist, onRemoveSong,isEditing }) => {
+  const [currentIndex, setCurrentIndex] = useState(-1);
+  const [currentTrack, setCurrentTrack] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const onPlaySong = (song, index) => {
     setCurrentIndex(index);
@@ -144,10 +144,10 @@ const PlaylistDetail = ({ playlist, onRemoveSong }) => {
               style={{ cursor: "pointer" }}
             >
               {song.title} - {song.artist}
-              {onRemoveSong && (
+              {onRemoveSong && isEditing && (
                 <Button
                   onClick={(e) => {
-                    e.stopPropagation(); // prevent triggering onPlaySong
+                    e.stopPropagation();
                     onRemoveSong(song.id);
                   }}
                   className="remove-song-button"

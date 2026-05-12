@@ -140,13 +140,14 @@ const SearchResults = ({ results, onTrackSelect }) => {
       {/* Playlist Dropdown */}
       <div style={{ marginBottom: "1rem" }}>
         <select
+        className="common-button"
           value={selectedPlaylistId}
           onChange={(e) => {
             setSelectedPlaylistId(e.target.value);
             setMessage("");
           }}
         >
-          <option value="">Select Playlist</option>
+          <option className="common-button" value="">Select Playlist</option>
           {playlists.map((pl) => (
             <option key={pl._id} value={pl._id}>
               {pl.name}

@@ -8,6 +8,7 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import PlaylistPage from "./pages/PlaylistPage";
 import ProfilePage from "./pages/ProfilePage";
+import Card from "./components/Common/Card";
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/playlists" element={<PlaylistPage />} />
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/cards" element={<Card />} />
           </Routes>
         </main>
       </Router>

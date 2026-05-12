@@ -271,12 +271,15 @@ body {
 }
 
 .playlist-song-list {
+  
   list-style: none;
   padding: 0;
   margin-top: 1rem;
 }
 
 .playlist-song-item {
+  display: flex;
+  justify-content: space-between;
   padding: 10px;
   border-bottom: 1px solid #444;
   cursor: pointer;
@@ -410,4 +413,17 @@ body {
   display: flex;
   justify-content: center;
   gap: 10px;
+}
+
+.card{
+  height: 90vh;
+  width: 90vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+  margin: 50px;
+  background-color: #333;
+  color: #121212;
 }
