@@ -1,16 +1,10 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useContext } from "react";
-import { AuthContext } from "../context/AuthContext"; // adjust path if needed
+import { AuthContext } from "../context/AuthContext";
 
-const Navbar = () => {
+const Navbar: React.FC = () => {
   const { user, logout } = useContext(AuthContext);
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
-  };
 
   return (
     <nav className="navbar">
@@ -27,7 +21,9 @@ const Navbar = () => {
         </li>
         <li>
           {user ? (
-            <Link to="/login" className="nav-link">Logout</Link>
+            <button onClick={logout} className="nav-link" style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'inherit', font: 'inherit' }}>
+              Logout
+            </button>
           ) : (
             <Link to="/login" className="nav-link">Login</Link>
           )}

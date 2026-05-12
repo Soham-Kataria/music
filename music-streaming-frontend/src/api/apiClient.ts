@@ -1,5 +1,4 @@
-// /src/api/apiClient.js
-import axios from "axios";
+import axios, { InternalAxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
 
 // Create Axios instance with base URL (change to your backend URL)
 const apiClient = axios.create({
@@ -11,24 +10,23 @@ const apiClient = axios.create({
 
 // Request interceptor to add token if available
 apiClient.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("token"); // or from context if preferred
+  (config: InternalAxiosRequestConfig) => {
+    const token = localStorage.getItem("token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error: AxiosError) => Promise.reject(error)
 );
 
 // Response interceptor to handle errors globally
 apiClient.interceptors.response.use(
-  (response) => response,
-  (error) => {
+  (response: AxiosResponse) => response,
+  (error: AxiosError) => {
     // Example: handle unauthorized globally
     if (error.response && error.response.status === 401) {
       // Optionally: redirect to login or clear auth data
-      // window.location.href = "/login";
       console.error("Unauthorized! Redirecting to login...");
     }
     return Promise.reject(error);
