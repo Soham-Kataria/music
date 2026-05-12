@@ -2,10 +2,14 @@ import React, { useState } from "react";
 import Button from "../Common/Button";
 import Input from "../Common/Input";
 
-const SearchBar = ({ onSearch }) => {
+interface SearchBarProps {
+  onSearch: (query: string) => void;
+}
+
+const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   const [query, setQuery] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (query.trim()) {
       onSearch(query.trim());
