@@ -1,12 +1,41 @@
-# React + Vite
+# Music Streaming Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the React frontend for the Music Streaming Application, built using Vite. It handles user authentication, playlist management, song searching (via Deezer), and an audio playback interface.
 
-Currently, two official plugins are available:
+## 🗂 Key Directories
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- `/src/components`: UI components organized by feature (Auth, Player, Playlist, Search, Common).
+- `/src/pages`: Top-level page views (Home, Login, Register, PlaylistPage).
+- `/src/context`: React Context for global state (e.g., `AuthContext`).
+- `/src/api`: Axios client configuration and API interceptors.
+- `/src/utils`: Helper functions and formatting utilities.
 
-## Expanding the ESLint configuration
+## 🚀 Getting Started
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Prerequisites
+- Node.js (v16+)
+
+### Installation & Setup
+
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+2. Configure environment (if needed):
+   Create a `.env` file in this directory and define any required variables (e.g., API base URL). By default, the API calls are configured in `/src/api/apiClient.js` (typically pointing to `http://localhost:5000/api`).
+
+3. Run the development server:
+   ```bash
+   npm run dev
+   ```
+
+## 🛠 Available Scripts
+
+- `npm run dev`: Starts the local development server with Hot Module Replacement (HMR).
+- `npm run build`: Compiles the application for production.
+- `npm run preview`: Previews the production build locally.
+- `npm run lint`: Runs ESLint to check for code quality issues.
+
+---
+*For the complete project overview and backend setup, please refer to the [Root README](../README.md).*
