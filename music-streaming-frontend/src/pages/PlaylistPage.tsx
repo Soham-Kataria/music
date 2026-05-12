@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import PlaylistList from "../components/Playlist/PlaylistList";
 import PlaylistForm from "../components/Playlist/PlaylistForm";
 import PlaylistDetail from "../components/Playlist/PlaylistDetail";
-import apiClient from "../api/apiClient";
+import { playlistService } from "../api/playlistService";
+import type { Playlist } from "../types";
 
-const PlaylistPage = () => {
-  const [playlists, setPlaylists] = useState([]);
-  const [selectedPlaylist, setSelectedPlaylist] = useState(null);
+const PlaylistPage: React.FC = () => {
+  const [playlists, setPlaylists] = useState<Playlist[]>([]);
+  const [selectedPlaylist, setSelectedPlaylist] = useState<Playlist | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -16,22 +17,22 @@ const PlaylistPage = () => {
 
   const fetchPlaylists = async () => {
     try {
-      const res = await apiClient.get("/playlists");
-      setPlaylists(Array.isArray(res.data.data) ? res.data.data : []);
+      const data = await playlistService.getPlaylists();
+      setPlaylists(data);
     } catch (err) {
       console.error("Failed to fetch playlists", err);
     }
   };
 
-  const handleSelect = (playlist) => {
+  const handleSelect = (playlist: Playlist) => {
     setSelectedPlaylist(playlist);
     setIsEditing(false);
     setMessage("");
   };
 
-  const handleCreate = async (data) => {
+  const handleCreate = async (data: { name: string; description: string }) => {
     try {
-      await apiClient.post("/playlists", data);
+      await playlistService.createPlaylist(data);
       await fetchPlaylists();
       setIsEditing(false);
       setMessage("Playlist created successfully!");
@@ -41,31 +42,29 @@ const PlaylistPage = () => {
     }
   };
 
-const handleUpdate = async (data) => {
-  if (!selectedPlaylist) return;
-  try {
-    // Update in backend and get updated playlist in the response
-    const { data: updatedPlaylist } = await apiClient.put(
-      `/playlists/${selectedPlaylist._id}`,
-      data
-    );
+  const handleUpdate = async (data: { name: string; description: string }) => {
+    if (!selectedPlaylist) return;
+    try {
+      const updatedPlaylist = await playlistService.updatePlaylist(
+        selectedPlaylist._id,
+        data
+      );
 
-    // Update local list without extra GET
-    await fetchPlaylists();
-    setSelectedPlaylist(updatedPlaylist);
+      await fetchPlaylists();
+      setSelectedPlaylist(updatedPlaylist);
 
-    setIsEditing(false);
-    setMessage("Playlist updated successfully!");
-  } catch (err) {
-    console.error("Failed to update playlist", err);
-    setMessage("Failed to update playlist.");
-  }
-};
+      setIsEditing(false);
+      setMessage("Playlist updated successfully!");
+    } catch (err) {
+      console.error("Failed to update playlist", err);
+      setMessage("Failed to update playlist.");
+    }
+  };
 
   const handleDelete = async () => {
     if (!selectedPlaylist) return;
     try {
-      await apiClient.delete(`/playlists/${selectedPlaylist._id}`);
+      await playlistService.deletePlaylist(selectedPlaylist._id);
       await fetchPlaylists();
       setSelectedPlaylist(null);
       setIsEditing(false);
@@ -76,20 +75,16 @@ const handleUpdate = async (data) => {
     }
   };
 
-  // New: Remove song handler
-  const handleRemoveSong = async (songId) => {
+  const handleRemoveSong = async (songId: string) => {
     if (!selectedPlaylist) return;
 
     try {
-      // Call backend API to remove song
-      await apiClient.delete(`/playlists/${selectedPlaylist._id}/songs/${songId}`);
+      await playlistService.removeSongFromPlaylist(selectedPlaylist._id, songId);
 
-      // Update local playlist state to remove the song immediately
       const updatedSongs = selectedPlaylist.songs.filter(song => song.id !== songId);
       const updatedPlaylist = { ...selectedPlaylist, songs: updatedSongs };
       setSelectedPlaylist(updatedPlaylist);
 
-      // Also update in playlists array for consistency
       setPlaylists((prev) =>
         prev.map((pl) => (pl._id === updatedPlaylist._id ? updatedPlaylist : pl))
       );
@@ -130,7 +125,7 @@ const handleUpdate = async (data) => {
       </div>
 
       <div className="playlist-detail-container">
-        <PlaylistDetail playlist={selectedPlaylist} onRemoveSong={handleRemoveSong} isEditing={isEditing}  />
+        <PlaylistDetail playlist={selectedPlaylist} onRemoveSong={handleRemoveSong} isEditing={isEditing} />
 
         {selectedPlaylist && !isEditing && (
           <>
